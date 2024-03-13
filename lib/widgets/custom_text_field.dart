@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class CustomTextField extends StatelessWidget {
+class CustomTextFormField extends StatelessWidget {
   final String? hintText;
-  CustomTextField({super.key, this.hintText, this.onChanged});
+  CustomTextFormField({super.key, this.hintText, this.onChanged});
   Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,6 @@ class CustomTextField extends StatelessWidget {
         if (value!.isEmpty) {
           return "Field is required !";
         }
-        return '';
       },
       cursorColor: Colors.white,
       style: const TextStyle(color: Colors.white),
