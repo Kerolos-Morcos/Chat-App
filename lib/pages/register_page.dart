@@ -40,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: 40,
                 ),
                 Image.asset(
-                  'assets/images/scholar.png',
+                  kLogo,
                   height: 100,
                 ),
                 const Text(
@@ -79,6 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: 15,
                 ),
                 CustomTextFormField(
+                  obscureText: true,
                   hintText: "Password",
                   onChanged: (value) {
                     password = value;

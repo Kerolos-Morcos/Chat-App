@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 40,
                 ),
                 Image.asset(
-                  'assets/images/scholar.png',
+                  kLogo,
                   height: 100,
                 ),
                 const Text(
@@ -78,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 15,
                 ),
                 CustomTextFormField(
+                  obscureText: true,
                   hintText: "Password",
                   onChanged: (value) {
                     password = value;
@@ -103,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                         Future.delayed(
                           const Duration(seconds: 0),
                           () {
-                            routeAnimationChat(context);
+                            routeAnimationChat(context, email);
                           },
                         );
                       } 
