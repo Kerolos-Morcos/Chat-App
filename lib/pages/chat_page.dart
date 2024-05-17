@@ -2,7 +2,6 @@ import 'package:chat_app/constants.dart';
 import 'package:chat_app/models/messages.dart';
 import 'package:chat_app/widgets/custom_chat_bubble.dart';
 import 'package:flutter/material.dart';
-// import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // ignore: must_be_immutable
@@ -10,36 +9,35 @@ class ChatPage extends StatelessWidget {
   ChatPage({super.key});
   static String id = 'chatPage';
   CollectionReference messages =
-      FirebaseFirestore.instance.collection(kMessagesCollections);
+      FirebaseFirestore.instance.collection(kMessagesCollection);
   TextEditingController controller = TextEditingController();
 
   final ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-  var email = ModalRoute.of(context)!.settings.arguments;
+    Map<String?, String?> arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String?, String?>;
+
+    String passedUsername = arguments['username'] as String;
+    String passedEmail = arguments['email'] as String;
     return StreamBuilder<QuerySnapshot>(
-      stream: messages
-          // .orderBy(kMessageDocumentCreatedAt, descending: true)
-          // .snapshots(),
-         .orderBy(kMessageDocumentCreatedAt)
-          .snapshots(),
+      stream: messages.orderBy(kMessageTime, descending: true).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-        // if (snapshot.hasData) {
           List<Message> messagesList = [];
           for (int i = 0; i < snapshot.data!.docs.length; i++) {
-            messagesList.add(
-              Message.fromJson(
-                snapshot.data!.docs[i].data(),
-              ),
-            );
+            var doc = snapshot.data!.docs[i];
+            var message = Message.fromJson(doc);
+            message.username = doc['username']; // Add this line
+            messagesList.add(message);
+
             WidgetsBinding.instance.addPostFrameCallback((_) {
-            scrollController.animateTo(
-              scrollController.position.extentTotal,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            );
-          });
+              scrollController.animateTo(
+                scrollController.position.extentTotal,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            });
           }
           return Scaffold(
             backgroundColor: const Color.fromARGB(255, 212, 211, 211),
@@ -75,13 +73,19 @@ class ChatPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.builder(
-                    // reverse: true,
+                    reverse: true,
                     controller: scrollController,
                     itemCount: messagesList.length,
                     itemBuilder: (context, index) {
-                      return messagesList[index].id == email ? CustomChatBubble(
-                        message: messagesList[index]
-                      ) : CustomChatBubbleForFriend(message: messagesList[index]);
+                      return messagesList[index].id == passedEmail
+                          ? CustomChatBubble(
+                              message: messagesList[index],
+                              username: '${messagesList[index].username}(You)',
+                            )
+                          : CustomChatBubbleForFriend(
+                              messageBody: messagesList[index],
+                              username: messagesList[index].username,
+                            );
                     },
                   ),
                 ),
@@ -89,24 +93,19 @@ class ChatPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
                     controller: controller,
-                    // onSubmitted: (value) {
-                    //   messages.add(
-                    //     {
-                    //       'body': value,
-                    //       'date': DateTime.now(),
-                    //     },
-                    //   );
-                    //   controller.clear();
-                    // },
                     decoration: InputDecoration(
-                      hintText: 'Send Message',
+                      hintText: 'Send Message ...',
+                      hintStyle: TextStyle(
+                        color: Colors.grey.shade600,
+                      ),
                       suffixIcon: IconButton(
                         onPressed: () {
                           messages.add(
                             {
-                              kMessageDocumentBody: controller.text,
-                              kMessageDocumentCreatedAt: FieldValue.serverTimestamp(),
-                              kUserID: email,
+                              kMessageBody: controller.text,
+                              kMessageTime: FieldValue.serverTimestamp(),
+                              'id': passedEmail,
+                              'username': passedUsername,
                             },
                           );
                           controller.clear();
@@ -116,6 +115,9 @@ class ChatPage extends StatelessWidget {
                           //     duration: const Duration(seconds: 3),
                           //     curve: Curves.fastOutSlowIn,
                           //   );
+                          scrollController.animateTo(0,
+                              duration: const Duration(seconds: 1),
+                              curve: Curves.fastOutSlowIn);
                         },
                         icon: const Icon(
                           Icons.send,
@@ -158,16 +160,3 @@ class ChatPage extends StatelessWidget {
     );
   }
 }
-
-// Chat Bubble Code
-        // padding: const EdgeInsets.only(top: 16, bottom: 16,),
-        // child: const BubbleSpecialThree(
-        //   text: 'Hello',
-        //   color: kPrimaryColor,
-        //   tail: true,
-        //   textStyle: TextStyle(
-        //     color: Colors.white,
-        //     fontSize: 20,
-        //   ),
-        //   isSender: false,
-        // ),

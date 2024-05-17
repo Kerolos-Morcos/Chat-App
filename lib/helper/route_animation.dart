@@ -53,10 +53,10 @@ void routeAnimationLogin(BuildContext context) {
   );
 }
 
-void routeAnimationChat(BuildContext context, String? email) {
+void routeAnimationChat(BuildContext context, String? email, String? username) {
   Navigator.of(context).push(
     PageRouteBuilder(
-      settings: RouteSettings(name: '/chatPage', arguments: email),
+      settings: RouteSettings(name: '/chatPage', arguments: {'email': email, 'username': username}),
       pageBuilder: (context, animation, secondaryAnimation) => ChatPage(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = 0.0;

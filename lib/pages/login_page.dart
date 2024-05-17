@@ -10,15 +10,16 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 // ignore: must_be_immutable
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
+  static String id = 'LoginPage';
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String? email, password;
+  late String email, password;
   bool isLoading = false;
   GlobalKey<FormState> formKey = GlobalKey();
+  late UserCredential userCredential;
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -73,16 +74,21 @@ class _LoginPageState extends State<LoginPage> {
                   onChanged: (value) {
                     email = value;
                   },
+                  icon: Icons.email,
+                  transparentColor: Colors.transparent,
+                  clickSound: false,
                 ),
                 const SizedBox(
                   height: 15,
                 ),
                 CustomTextFormField(
-                  obscureText: true,
                   hintText: "Password",
                   onChanged: (value) {
                     password = value;
                   },
+                  icon: Icons.lock,
+                  obscureText: true,
+                  afterPressIcon: Icons.lock_open_outlined,
                 ),
                 const SizedBox(
                   height: 23,
@@ -95,36 +101,20 @@ class _LoginPageState extends State<LoginPage> {
                         isLoading = true;
                       });
                       try {
-                        await userLogin();
+                        await loginUser();
+                        var username = userCredential.user!.displayName;
                         showSnackBar(
                           context,
-                          'Login Successfully !',
+                          'Successfully Logged as $username !',
                           backgroundColor: Colors.green,
                         );
                         Future.delayed(
                           const Duration(seconds: 0),
                           () {
-                            routeAnimationChat(context, email);
+                            routeAnimationChat(context, email, username);
                           },
                         );
                       } 
-                      // on FirebaseAuthException catch (e) {
-                      //   if (e.code == 'user-not-found') {
-                      //     print("User not found");
-                      //     showSnackBar(
-                      //       context,
-                      //       'No user found for that email.',
-                      //       backgroundColor: Colors.red,
-                      //     );
-                      //   } else if (e.code == 'wrong-password') {
-                      //     print("Wrong password");
-                      //     showSnackBar(
-                      //       context,
-                      //       'Wrong password provided for that user.',
-                      //       backgroundColor: Colors.red,
-                      //     );
-                      //   }
-                      // } 
                       catch (e) {
                         print("Error occurred: $e");
                         showSnackBar(
@@ -155,7 +145,6 @@ class _LoginPageState extends State<LoginPage> {
                     GestureDetector(
                       onTap: () {
                         routeAnimationLogin(context);
-                        // Navigator.pushNamed(context, RegisterPage.id);
                       },
                       child: const Text(
                         ' Sign Up',
@@ -176,13 +165,11 @@ class _LoginPageState extends State<LoginPage> {
 
   
 // Methods
-  Future<void> userLogin() async {
-    // ignore: unused_local_variable
-    UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email!,
-      password: password!,
-    );
+  Future<UserCredential> loginUser() async {
+    var auth = FirebaseAuth.instance;
+    userCredential = await auth.signInWithEmailAndPassword(
+        email: email, password: password);
+    return userCredential;
   }
 
   }

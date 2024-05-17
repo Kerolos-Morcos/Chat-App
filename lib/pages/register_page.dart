@@ -3,6 +3,7 @@ import 'package:chat_app/helper/route_animation.dart';
 import 'package:chat_app/helper/show_snack_bar.dart';
 import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/widgets/custom_text_field.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -17,11 +18,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  String? email, password;
+  String? email, password, username;
   bool isLoading = false;
+  
+  GlobalKey<FormState> formKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    GlobalKey<FormState> formKey = GlobalKey();
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       progressIndicator: const CircularProgressIndicator(
@@ -48,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   'Chat App',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 35,
+                    fontSize: 32,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -67,26 +69,43 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
                 const SizedBox(
-                  height: 18,
+                  height: 15,
+                ),
+                CustomTextFormField(
+                  hintText: "Username",
+                  onChanged: (value) {
+                    username = value;
+                  },
+                  icon: Icons.person,
+                  transparentColor: Colors.transparent,
+                  clickSound: false,
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 CustomTextFormField(
                   hintText: "Email",
                   onChanged: (value) {
                     email = value;
                   },
+                  icon: Icons.email,
+                  transparentColor: Colors.transparent,
+                  clickSound: false,
                 ),
                 const SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
                 CustomTextFormField(
-                  obscureText: true,
                   hintText: "Password",
                   onChanged: (value) {
                     password = value;
                   },
+                  icon: Icons.lock,
+                  obscureText: true,
+                  afterPressIcon: Icons.lock_open_outlined,
                 ),
                 const SizedBox(
-                  height: 23,
+                  height: 25,
                 ),
                 CustomButton(
                   onTap: () async {
@@ -95,7 +114,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         isLoading = true;
                       });
                       try {
-                        await registerNewUser();
+                        UserCredential userCredential = await registerUser();
+                      await userCredential.user!.updateDisplayName(username);
                         showSnackBar(
                           context,
                           'Sign Up Successful, you will be directed to login page',
@@ -169,12 +189,18 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
 // Methods
-  Future<void> registerNewUser() async {
-    UserCredential user =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email!,
-      password: password!,
-    );
-    print(user.user!.email);
+  Future<UserCredential> registerUser() async {
+    var auth = FirebaseAuth.instance;
+    UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+        email: email!, password: password!);
+    print(userCredential.user!.email);
+    final user = userCredential.user!;
+    final firestore = FirebaseFirestore.instance;
+    final docRef = firestore.collection('users').doc(user.uid);
+    docRef.set({
+      'username': username,
+      'email': user.email,
+    });
+    return userCredential;
   }
 }

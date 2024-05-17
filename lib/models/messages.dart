@@ -1,15 +1,26 @@
 import 'package:chat_app/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message {
   final String body;
-  // final String userName;
+  final DateTime createdAt;
   final String id;
-  Message(this.body, this.id);
-  factory Message.fromJson(json) {
+  String username;
+  Message({
+    required this.id,
+    required this.createdAt,
+    required this.body,
+    required this.username,
+  });
+
+  factory Message.fromJson(jsonData) {
     return Message(
-      json[kMessageDocumentBody],
-      // json['userName'],
-      json[kUserID],
+      body: jsonData[kMessageBody],
+      createdAt: jsonData['createdAt'] != null
+        ? (jsonData['createdAt'] as Timestamp).toDate()
+        : DateTime.now(),
+      id: jsonData[kUserID],
+      username:  jsonData['username'],
     );
   }
 }
