@@ -1,3 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
+
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/helper/route_animation.dart';
 import 'package:chat_app/helper/show_snack_bar.dart';
@@ -20,7 +24,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   String? email, password, username;
   bool isLoading = false;
-  
+
   GlobalKey<FormState> formKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
@@ -115,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       });
                       try {
                         UserCredential userCredential = await registerUser();
-                      await userCredential.user!.updateDisplayName(username);
+                        await userCredential.user!.updateDisplayName(username);
                         showSnackBar(
                           context,
                           'Sign Up Successful, you will be directed to login page',
@@ -193,7 +197,7 @@ class _RegisterPageState extends State<RegisterPage> {
     var auth = FirebaseAuth.instance;
     UserCredential userCredential = await auth.createUserWithEmailAndPassword(
         email: email!, password: password!);
-    print(userCredential.user!.email);
+    log(userCredential.user!.email!);
     final user = userCredential.user!;
     final firestore = FirebaseFirestore.instance;
     final docRef = firestore.collection('users').doc(user.uid);

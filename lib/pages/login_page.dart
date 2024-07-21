@@ -1,3 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
+
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/helper/route_animation.dart';
 import 'package:chat_app/helper/show_snack_bar.dart';
@@ -114,15 +118,13 @@ class _LoginPageState extends State<LoginPage> {
                             routeAnimationChat(context, email, username);
                           },
                         );
-                      } 
-                      catch (e) {
-                        print("Error occurred: $e");
+                      } catch (e) {
+                        log("Error occurred: $e");
                         showSnackBar(
                           context,
                           'Sorry, email or password is incorrect !',
                           backgroundColor: Colors.red,
                         );
-                        
                       }
                       setState(() {
                         isLoading = false;
@@ -163,13 +165,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  
 // Methods
   Future<UserCredential> loginUser() async {
     var auth = FirebaseAuth.instance;
-    userCredential = await auth.signInWithEmailAndPassword(
-        email: email, password: password);
+    userCredential =
+        await auth.signInWithEmailAndPassword(email: email, password: password);
     return userCredential;
   }
-
-  }
+}
