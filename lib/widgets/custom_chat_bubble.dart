@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CustomChatBubble extends StatelessWidget {
-  CustomChatBubble(
-      {super.key, required this.message, required this.username});
+  CustomChatBubble({super.key, required this.message, required this.username});
   Message message;
   String username = '';
   @override
@@ -38,8 +37,12 @@ class CustomChatBubble extends StatelessWidget {
               ),
             ),
           ),
-          getTitleText('${message.createdAt.hour}:${message.createdAt.minute} ${message.createdAt.hour>12? 'PM': 'AM'}' , MainAxisAlignment.start),
-          const SizedBox(height: 8,)
+          getTitleText(
+              '${message.createdAt.hour}:${message.createdAt.minute} ${message.createdAt.hour > 12 ? 'PM' : 'AM'}',
+              MainAxisAlignment.start),
+          const SizedBox(
+            height: 8,
+          )
         ],
       ),
     );
@@ -54,10 +57,10 @@ class CustomChatBubbleForFriend extends StatelessWidget {
     required this.username,
   });
   Message messageBody;
-String username;
+  String username;
   @override
   Widget build(BuildContext context) {
-     messageBody.username = username;
+    messageBody.username = username;
     return Padding(
       padding: const EdgeInsets.only(right: 10.0),
       child: Column(
@@ -84,8 +87,12 @@ String username;
               ),
             ),
           ),
-          getTitleText('${messageBody.createdAt.hour}:${messageBody.createdAt.minute} ${messageBody.createdAt.hour>12? 'PM': 'AM'}' , MainAxisAlignment.end),
-          const SizedBox(height: 8,)
+          getTitleText(
+              '${messageBody.createdAt.hour}:${messageBody.createdAt.minute} ${messageBody.createdAt.hour > 12 ? 'PM' : 'AM'}',
+              MainAxisAlignment.end),
+          const SizedBox(
+            height: 8,
+          )
         ],
       ),
     );

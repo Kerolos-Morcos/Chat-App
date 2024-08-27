@@ -28,7 +28,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   Widget build(BuildContext context) {
     return TextFormField(
       // ignore: body_might_complete_normally_nullable
-      validator: (value){
+      validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Field is required !';
         }

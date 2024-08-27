@@ -1,5 +1,6 @@
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/models/messages.dart';
+import 'package:chat_app/widgets/custom_app_bar.dart';
 import 'package:chat_app/widgets/custom_chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,34 +41,12 @@ class ChatPage extends StatelessWidget {
             });
           }
           return Scaffold(
-            backgroundColor: const Color.fromARGB(255, 212, 211, 211),
-            appBar: AppBar(
-              automaticallyImplyLeading: true,
-              scrolledUnderElevation: 0,
-              backgroundColor: kPrimaryColor,
-              iconTheme: const IconThemeData(
-                color: Colors.white,
+            backgroundColor: const Color.fromARGB(255, 230, 229, 229),
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(
+                MediaQuery.of(context).size.height * 0.092,
               ),
-              title: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    kLogo,
-                    height: 60,
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  const Text(
-                    'Chat',
-                    style: TextStyle(
-                      fontSize: 23,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              centerTitle: true,
+              child: const CustomAppBar(),
             ),
             body: Column(
               children: [
