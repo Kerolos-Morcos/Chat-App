@@ -11,7 +11,7 @@ void showSnackBar(BuildContext context, String message,
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.all(10),
       elevation: 10,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
       action: SnackBarAction(
         label: 'Close',
         onPressed: () {
