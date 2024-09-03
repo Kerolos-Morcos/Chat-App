@@ -1,9 +1,7 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 
+import 'package:chat_app/blocs/auth_bloc/auth_bloc.dart';
 import 'package:chat_app/constants.dart';
-import 'package:chat_app/cubits/login/login_cubit.dart';
 import 'package:chat_app/helper/route_animation.dart';
 import 'package:chat_app/helper/show_snack_bar.dart';
 import 'package:chat_app/widgets/custom_button.dart';
@@ -22,20 +20,20 @@ class LoginPage extends StatelessWidget {
     late String email, password;
     bool isLoading = false;
 
-    return BlocListener<LoginCubit, LoginState>(
+    return BlocListener<AuthBloc, AuthBlocState>(
       listener: (context, state) {
-        if (state is LoginLoading) {
+        if (state is LoginBlocLoading) {
           isLoading = true;
-        } else if (state is LoginSuccess) {
+        } else if (state is LoginBlocSuccess) {
           isLoading = false;
-          var name = BlocProvider.of<LoginCubit>(context).username;
+          var name = BlocProvider.of<AuthBloc>(context).username;
           showSnackBar(
             context,
             'Successfully Logged as $name !',
             backgroundColor: Colors.green,
           );
           routeAnimationChat(context, email, name);
-        } else if (state is LoginFailure) {
+        } else if (state is LoginBlocFailure) {
           isLoading = false;
           log("Error occurred: ${state.errorMessage}");
           showSnackBar(
@@ -118,10 +116,11 @@ class LoginPage extends StatelessWidget {
                   ),
                   CustomButton(
                     buttonText: 'Sign In',
-                    onTap: () async{
+                    onTap: () async {
                       if (formKey.currentState!.validate()) {
-                        BlocProvider.of<LoginCubit>(context)
-                            .loginUser(email: email, password: password);
+                        BlocProvider.of<AuthBloc>(context).add(
+                          LoginEvent(email: email, password: password),
+                        );
                       }
                     },
                   ),

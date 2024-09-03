@@ -17,10 +17,10 @@ class Message {
     return Message(
       body: jsonData[kMessageBody],
       createdAt: jsonData['createdAt'] != null
-        ? (jsonData['createdAt'] as Timestamp).toDate()
-        : DateTime.now(),
+          ? (jsonData['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
       id: jsonData[kUserID],
-      username:  jsonData['username'],
+      username: jsonData['username'],
     );
   }
 }

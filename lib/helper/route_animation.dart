@@ -58,7 +58,7 @@ void routeAnimationChat(BuildContext context, String? email, String? username) {
     PageRouteBuilder(
       settings: RouteSettings(
           name: '/chatPage', arguments: {'email': email, 'username': username}),
-      pageBuilder: (context, animation, secondaryAnimation) => ChatPage(),
+      pageBuilder: (context, animation, secondaryAnimation) => const ChatPage(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = 0.0;
         var end = 1.0;

@@ -1,11 +1,29 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'register_state.dart';
+part 'auth_state.dart';
 
-class RegisterCubit extends Cubit<RegisterState> {
-  RegisterCubit() : super(RegisterInitial());
+class AuthCubit extends Cubit<AuthState> {
+  AuthCubit() : super(AuthInitial());
+
+  late String username;
+  Future<void> loginUser(
+      {required String email, required String password}) async {
+    emit(LoginLoading());
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      username = userCredential.user!.displayName ?? 'username';
+      emit(LoginSuccess());
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-credential') {
+        emit(LoginFailure('wrong email or password !'));
+      } else {
+        emit(LoginFailure('something went wrong !'));
+      }
+      return Future.error(e.message.toString());
+    }
+  }
 
   Future<void> registerUser(
       {required String email,

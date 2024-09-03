@@ -1,5 +1,5 @@
 import 'package:chat_app/constants.dart';
-import 'package:chat_app/cubits/register/register_cubit.dart';
+import 'package:chat_app/cubits/auth/auth_cubit.dart';
 import 'package:chat_app/helper/route_animation.dart';
 import 'package:chat_app/helper/show_snack_bar.dart';
 import 'package:chat_app/widgets/custom_button.dart';
@@ -18,7 +18,7 @@ class RegisterPage extends StatelessWidget {
     GlobalKey<FormState> formKey = GlobalKey();
     late String email, password, username;
     bool isLoading = false;
-    return BlocConsumer<RegisterCubit, RegisterState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is RegisterLoading) {
           isLoading = true;
@@ -126,7 +126,7 @@ class RegisterPage extends StatelessWidget {
                     CustomButton(
                       onTap: () {
                         if (formKey.currentState!.validate()) {
-                          BlocProvider.of<RegisterCubit>(context).registerUser(
+                          BlocProvider.of<AuthCubit>(context).registerUser(
                               email: email,
                               password: password,
                               username: username);
