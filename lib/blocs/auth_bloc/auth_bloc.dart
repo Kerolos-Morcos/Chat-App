@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'auth_event.dart';
@@ -27,4 +28,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthBlocState> {
       }
     });
   }
+  // Overriding onTransition
+  // @override
+  // void onTransition(Transition<AuthEvent, AuthBlocState> transition) {
+  //   debugPrint(transition.toString());
+  //   super.onTransition(transition);
+  // }
 }

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'auth_state.dart';
@@ -54,4 +55,11 @@ class AuthCubit extends Cubit<AuthState> {
       return Future.error(e.toString());
     }
   }
+
+// Overriding onChange
+  // @override
+  // void onChange(Change<AuthState> change) {
+  //   super.onChange(change);
+  //   debugPrint(change.toString());
+  // }
 }
